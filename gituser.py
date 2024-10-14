@@ -1,15 +1,25 @@
 import os
 import csv
 import re
+import json
+
 import requests
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
 
 GITHUB_URL="https://api.github.com/"
-GITHUB_TOKEN=os.environ['GITHUB_TOKEN']
+GITHUB_TOKEN=os.environ.get('GITHUB_TOKEN')
 GITHUB_HEADERS = {
     'Authorization': f'token {GITHUB_TOKEN}',
     'Accept': 'application/vnd.github.v3+json'
 }
+GITHUB_ORG_URL=os.environ.get('GITHUB_ORG_URL')
 CSV=os.environ['CSV_FILE_PATH']
+
+THREAD_TS = os.environ.get('SLACK_THREAD')
+CHANNEL_ID = os.environ.get('SLACK_CHANNEL')
+SLACK_TOKEN = os.environ.get('SLACK_API_TOKEN')
+SUBJECT = os.environ.get('ALERT_SUBJECT')
 
 with open(CSV, 'a+', newline='\n') as file:
   # create headers
@@ -124,11 +134,51 @@ def GetAllContribsData(repos_json,
         user_data = GetUserData(user['url'], 
                                 path=CSV)
 
+def SendSlackFileToThread(token, 
+                          channel_id, 
+                          thread_ts, 
+                          file_path, 
+                          initial_comment):
+    
+    client = WebClient(token=token)
+    try:
+        response = client.files_upload_v2(
+            channel=channel_id,
+            file=file_path,
+            initial_comment=initial_comment,
+            thread_ts=thread_ts
+        )
+        return response
+    except SlackApiError as e:
+        print(f"Error sending file to Slack thread: {e}")
+        raise
+
+
+def ExtractSlackResponseInfo(response):
+    return {
+        "ok": response.get("ok"),
+        "file_id": response.get("file", {}).get("id"),
+        "file_name": response.get("file", {}).get("name"),
+        "file_url": response.get("file", {}).get("url_private"),
+        "timestamp": response.get("file", {}).get("timestamp")
+    }
+
+
 if __name__=='__main__':
   # grab the orgname from Github
-  orgname = GrabOrgName('URL')
+  orgname = GrabOrgName(GITHUB_ORG_URL)
   # get the list of Repos for that org
   repo_json = GetOrgRepos(orgname)
   # get the users of each repo
-  get_user_data = GetAllContribsData(repo_json)
+  initial_comment = (f"Github Contrib CSV for Github Org '{GITHUB_ORG_URL}'")
+  GetAllContribsData(repo_json)
+  # do something with the data
+  slack_response = SendSlackFileToThread(SLACK_TOKEN, 
+                                         CHANNEL_ID, 
+                                         THREAD_TS, 
+                                         CSV, 
+                                         initial_comment)
 
+  # Extract relevant information from the Slack response
+  response_info = ExtractSlackResponseInfo(slack_response)
+  print(json.dumps(response_info, indent=2))
