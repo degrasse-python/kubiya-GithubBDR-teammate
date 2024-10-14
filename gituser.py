@@ -1,5 +1,5 @@
 import os
-from typing import List
+import csv
 import re
 import requests
 
@@ -11,7 +11,13 @@ GITHUB_HEADERS = {
 }
 CSV=os.environ['CSV_FILE_PATH']
 
-def GrabOrgName(github_org_url):
+with open(CSV, 'a+', newline='\n') as file:
+  # create headers
+  file.write('name,login,company,org_url,email,githublink,bloglink')
+file.close()
+
+def GrabOrgName(github_org_url,
+                headers=None):
   """ Grab the org name from the URL given at prompt.
 
   Args:
@@ -34,31 +40,8 @@ def GetOrgRepos(org_name,
   """  
 
   repos_uri = GITHUB_URL + 'orgs' + org_name + '/repos'
-  if headers:
-    return requests.get(repos_uri, headers=headers).json()
-  else:
-    return requests.get(repos_uri).json()
-
-
-def GetContribs(repos_json,
-                headers=None):
-  """ Get all the contributors usernames from a Github org
-
-  Args:
-      repo_list (_type_): json
-
-  Returns:
-      _type_: json
-  """  
-  for repo in repos_json:
-    #  res_repos.json()[0]['full_name'] == repo name
-    repos_uri = repo['url'] + '/contributors'   
-    res_contrib_list = requests.get(repos_uri,
-                                    headers=headers).json()
-
 
   return requests.get(repos_uri).json()
-
 
 
 def GetUserData(user_url, 
@@ -83,27 +66,63 @@ def GetUserData(user_url,
   # res_user.json()['blog']
   if headers:
     res = requests.get(user_url, 
-                       headers=headers)
+                      headers=headers)
   else:
     res = requests.get(user_url)
   
   if path:
-    with open(path, 'a+', newline='\n') as file:
+    with open(path, 'a', newline='') as file:
       # create headers
-      file.write(str(res.json()['name'])+','
-                 +str(res.json()['login'])+','
-                 +str(res.json()['company'])+','
-                 +str(res.json()['organizations_url'])+','
-                 +str(res.json()['email'])+','
-                 +str(res.json()['url'])+','
-                 +str(res.json()['blog'])
-                 )
+      writer = csv.writer(file, delimiter=',')
+      writer.writerow([str(res.json()['name']),
+                      str(res.json()['login']),
+                      str(res.json()['company']),
+                      str(res.json()['organizations_url']),
+                      str(res.json()['email']),
+                      str(res.json()['url']),
+                      str(res.json()['blog']),
+                      ]
+                    )
+    
+    file.close()
+
   else:
-    with open(CSV, 'a+', newline='\n') as file:
+    with open(CSV, 'w', newline='\n') as file:
       # create headers
       file.write('name,login,company,org_url,email,githublink,bloglink')
 
 
+
+
+def GetAllContribsData(repos_json,
+                headers=None):
+  """ Get all the contributors usernames from a Github org
+
+  Args:
+      repo_list (_type_): json
+
+  Returns:
+      _type_: json
+  """  
+  if headers:
+    # for each repo get all contributors
+    for repo in repos_json:
+      repo_contrib_uri = repo['url'] + '/contributors' 
+      res_contrib_list = requests.get(repo_contrib_uri, headers=headers).json()
+
+      for user in res_contrib_list:
+        print(user)
+        user_data = GetUserData(user['url'], 
+                                path=CSV)
+  else:
+    for repo in repos_json:
+      repo_contrib_uri = repo['url'] + '/contributors' 
+      res_contrib_list = requests.get(repo_contrib_uri).json()
+
+      for user in res_contrib_list:
+        print(user)
+        user_data = GetUserData(user['url'], 
+                                path=CSV)
 
 if __name__=='__main__':
   # grab the orgname from Github
