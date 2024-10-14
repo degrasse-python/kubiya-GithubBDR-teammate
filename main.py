@@ -23,10 +23,11 @@ app = FastAPI()
 
 # data model
 class Github(BaseModel):
+  
   # declare data expected by body
-  latitude: float
-  longitude: float
-  start: str
+  # latitude: float
+  # longitude: float
+  # start: str
   end: str
 
 @app.get("/")
@@ -127,7 +128,3 @@ if __name__=='__main__':
   username_list = GetContribs(repo_json)
   # get the user data from the user list
   user_data = GetUserData(username_list)
-
-
-  prediction = teammateGetContribs('','')
-
