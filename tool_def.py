@@ -3,7 +3,7 @@ import inspect
 from kubiya_sdk import tool_registry
 from kubiya_sdk.tools.models import Arg, Tool, FileSpec
 
-import gituser
+from . import gituser
 
 get_linkedin_email_from_github = Tool(
     name="get_linkedin_email_from_github",
