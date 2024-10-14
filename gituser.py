@@ -130,6 +130,5 @@ if __name__=='__main__':
   # get the list of Repos for that org
   repo_json = GetOrgRepos(orgname)
   # get the users of each repo
-  username_list = GetContribs(repo_json)
-  # get the user data from the user list
-  user_data = GetUserData(username_list)
+  get_user_data = GetAllContribsData(repo_json)
+
