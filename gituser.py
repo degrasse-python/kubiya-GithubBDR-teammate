@@ -1,11 +1,16 @@
 import os
+from datetime import datetime
 import csv
+from typing import List
 import re
 import json
 
 import requests
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+
+import scraper
+
 
 GITHUB_URL="https://api.github.com/"
 GITHUB_TOKEN=os.environ.get('GITHUB_TOKEN')
@@ -26,6 +31,7 @@ with open(CSV, 'a+', newline='\n') as file:
   file.write('name,login,company,org_url,email,githublink,bloglink')
 file.close()
 
+# functions
 def GrabOrgName(github_org_url,
                 headers=None):
   """ Grab the org name from the URL given at prompt.
@@ -54,13 +60,15 @@ def GetOrgRepos(org_name,
   return requests.get(repos_uri).json()
 
 
-def GetUserData(user_url, 
+
+def GetUserData(user,
+                linkedin_url='None', 
                 path=None,
                 headers=None):
-  """ Iterates over a json to return csv of all user data
+  """ Adds data to return csv for Github user.
 
   Args:
-      res_json (_type_): json
+      user (_type_): str
 
   Returns:
       _type_: None
@@ -74,11 +82,26 @@ def GetUserData(user_url,
   # res_user.json()['company']
   # res_user.json()['email']
   # res_user.json()['blog']
+
+  try:
+    # Scrape data
+    raw_html = scraper.fetch_html_selenium(user)
+    markdown = scraper.html_to_markdown_with_readability(raw_html)
+    pattern = r'linkedin[^/]+/in/[^/]+'
+    result = re.search(pattern, markdown)
+    if result:
+      linkedin_url = result[0]
+      print(linkedin_url)
+
+
+  except Exception as e:
+    print(e)
+
   if headers:
-    res = requests.get(user_url, 
+    res = requests.get(user, 
                       headers=headers)
   else:
-    res = requests.get(user_url)
+    res = requests.get(user)
   
   if path:
     with open(path, 'a', newline='') as file:
@@ -91,17 +114,25 @@ def GetUserData(user_url,
                       str(res.json()['email']),
                       str(res.json()['url']),
                       str(res.json()['blog']),
+                      linkedin_url, 
                       ]
                     )
-    
     file.close()
-
   else:
-    with open(CSV, 'w', newline='\n') as file:
+    with open('./user_data.csv', 'a', newline='') as file:
       # create headers
-      file.write('name,login,company,org_url,email,githublink,bloglink')
-
-
+      writer = csv.writer(file, delimiter=',')
+      writer.writerow([str(res.json()['name']),
+                      str(res.json()['login']),
+                      str(res.json()['company']),
+                      str(res.json()['organizations_url']),
+                      str(res.json()['email']),
+                      str(res.json()['url']),
+                      str(res.json()['blog']),
+                      linkedin_url, 
+                      ]
+                    )
+    file.close()
 
 
 def GetAllContribsData(repos_json,
@@ -133,6 +164,38 @@ def GetAllContribsData(repos_json,
         print(user)
         user_data = GetUserData(user['url'], 
                                 path=CSV)
+
+
+def GetAllContribsData(repos_json,
+                headers=None):
+  """ Get all the contributors usernames from a Github org
+
+  Args:
+      repo_list (_type_): json
+
+  Returns:
+      _type_: json
+  """  
+  if headers:
+    # for each repo get all contributors
+    for repo in repos_json:
+      repo_contrib_uri = repo['url'] + '/contributors' 
+      res_contrib_list = requests.get(repo_contrib_uri, headers=headers).json()
+
+      for user in res_contrib_list:
+        print(user)
+        user_data = GetUserData(user['url'], 
+                                path=CSV)
+  else:
+    for repo in repos_json:
+      repo_contrib_uri = repo['url'] + '/contributors' 
+      res_contrib_list = requests.get(repo_contrib_uri).json()
+
+      for user in res_contrib_list:
+        print(user)
+        user_data = GetUserData(user['url'], 
+                                path=CSV)
+
 
 def SendSlackFileToThread(token, 
                           channel_id, 
