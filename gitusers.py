@@ -24,57 +24,64 @@ SUBJECT = os.environ.get('ALERT_SUBJECT')
 OPENAI_API_KEY=os.environ.get('OPENAI_API_KEY')
 
 
-
-
 def is_member_of_org(org, username):
-    """Check if a user is a member of the given organization."""
-    url = f"https://api.github.com/orgs/{org}/members/{username}"
-    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-    
-    response = requests.get(url, headers=headers)
-    
-    # Status 204 means the user is a member, 404 means they are not
-    return response.status_code == 204
+  """Check if a user is a member of the given organization."""
+  url = f"https://api.github.com/orgs/{org}/members/{username}"
+  headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+  
+  response = requests.get(url, headers=headers)
+  
+  # Status 204 means the user is a member, 404 means they are not
+  return response.status_code == 204
 
 def get_committers(repo_url):
-    """Get unique committers from the past month, excluding organization members."""
-    # Extract owner and repo from the URL
-    parts = repo_url.rstrip('/').split('/')
-    owner, repo = parts[-2], parts[-1]
+  
+  """ Get all the committers usernames from a Github org
 
-    # GitHub API endpoint for commits
-    api_url = f"https://api.github.com/repos/{owner}/{repo}/commits"
-    
-    # Calculate the timestamp for the past month
-    since = (datetime.now() - timedelta(days=30)).isoformat()
-    
-    # Make the request to fetch commits
-    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-    response = requests.get(api_url, params={"since": since}, headers=headers)
-    
-    if response.status_code != 200:
-        print(f"Error: {response.status_code}, {response.json()}")
-        return []
+  Args:
+      repo_url (_type_): str
 
-    # Extract unique committers
-    commits = response.json()
-    committers = {commit['author']['login'] for commit in commits if commit['author']}
-    
-    # Filter out committers who are part of the organization
-    external_committers = [
-        user for user in committers if not is_member_of_org(owner, user)
-    ]
-    
-    return external_committers
+  Returns:
+      _type_: list
+  """ 
+
+  # Extract owner and repo from the URL
+  parts = repo_url.rstrip('/').split('/')
+  owner, repo = parts[-2], parts[-1]
+
+  # GitHub API endpoint for commits
+  api_url = f"https://api.github.com/repos/{owner}/{repo}/commits"
+  
+  # Calculate the timestamp for the past month
+  since = (datetime.now() - timedelta(days=30)).isoformat()
+  
+  # Make the request to fetch commits
+  headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+  response = requests.get(api_url, params={"since": since}, headers=headers)
+  
+  if response.status_code != 200:
+      print(f"Error: {response.status_code}, {response.json()}")
+      return []
+
+  # Extract unique committers
+  commits = response.json()
+  committers = {commit['author']['login'] for commit in commits if commit['author']}
+  
+  # Filter out committers who are part of the organization
+  external_committers = [
+      user for user in committers if not is_member_of_org(owner, user)
+  ]
+  
+  return external_committers
 
 def ExtractSlackResponseInfo(response):
-    return {
-        "ok": response.get("ok"),
-        "file_id": response.get("file", {}).get("id"),
-        "file_name": response.get("file", {}).get("name"),
-        "file_url": response.get("file", {}).get("url_private"),
-        "timestamp": response.get("file", {}).get("timestamp")
-    }
+  return {
+      "ok": response.get("ok"),
+      "file_id": response.get("file", {}).get("id"),
+      "file_name": response.get("file", {}).get("name"),
+      "file_url": response.get("file", {}).get("url_private"),
+      "timestamp": response.get("file", {}).get("timestamp")
+  }
 
 def SendSlackFileToThread(token, 
                           channel_id, 
@@ -82,18 +89,18 @@ def SendSlackFileToThread(token,
                           file_path, 
                           initial_comment):
     
-    client = WebClient(token=token)
-    try:
-        response = client.files_upload_v2(
-            channel=channel_id,
-            file=file_path,
-            initial_comment=initial_comment,
-            thread_ts=thread_ts
-        )
-        return response
-    except SlackApiError as e:
-        print(f"Error sending file to Slack thread: {e}")
-        raise
+  client = WebClient(token=token)
+  try:
+    response = client.files_upload_v2(
+        channel=channel_id,
+        file=file_path,
+        initial_comment=initial_comment,
+        thread_ts=thread_ts
+    )
+    return response
+  except SlackApiError as e:
+    print(f"Error sending file to Slack thread: {e}")
+    raise
 
 
 # Example usage
