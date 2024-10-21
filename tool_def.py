@@ -3,7 +3,7 @@ import inspect
 from kubiya_sdk import tool_registry
 from kubiya_sdk.tools.models import Arg, Tool, FileSpec
 
-from . import gitusers
+import gitusers
 
 get_github_repo_commit_list = Tool(
     name="get_github_repo_commit_list",
