@@ -3,10 +3,10 @@ import inspect
 from kubiya_sdk import tool_registry
 from kubiya_sdk.tools.models import Arg, Tool, FileSpec
 
-from . import gitusers
+import gitusers
 
-get_linkedin_email_from_github = Tool(
-    name="get_linkedin_email_from_github",
+get_github_repo_commit_list = Tool(
+    name="get_github_repo_commit_list",
     description="Generate csv data to be used for SalesOps",
     type="docker",
     image="python:3.11-bullseye",
@@ -46,4 +46,4 @@ python /tmp/gitusers.py --github_repo_url "$github_repo_url" --alert_subject "$a
 )
 
 # Register the updated tool
-tool_registry.register("deonsaunders-kjr", get_linkedin_email_from_github)
+tool_registry.register("deonsaunders-kjr", get_github_repo_commit_list)

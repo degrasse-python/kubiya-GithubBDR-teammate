@@ -1,4 +1,5 @@
 import os
+import csv
 import json
 from datetime import datetime, timedelta
 
@@ -65,14 +66,41 @@ def get_committers(repo_url):
 
   # Extract unique committers
   commits = response.json()
-  committers = {commit['author']['login'] for commit in commits if commit['author']}
+  committers = {commit['author']['login']: {'name': commit['author']['name'], 
+                                            'email': commit['author']['email'],
+                                            'url': commit['author']['url'],
+                                            'blog': commit['author']['blog'],
+                                            } for commit in commits if commit['author']}
+  
+  committers_dict = {commit['author']['login']: {'name': commit['author']['name'], 
+                                              'email': commit['author']['email'],
+                                              'url': commit['author']['url'],
+                                              'blog': commit['author']['blog'],
+                                              } for commit in commits if commit['author']}
+
   
   # Filter out committers who are part of the organization
   external_committers = [
-      user for user in committers if not is_member_of_org(owner, user)
+      user for user in committers_dict if not is_member_of_org(owner, user)
   ]
   
   return external_committers
+
+def SaveExternalCommitersData(external_committers, path='./user_data.csv'):
+  with open(path, 'a', newline='') as file:
+    # create headers
+      writer = csv.writer(file, delimiter=',')
+      writer.writerow([ # str(res.json()['name']),
+                       # str(res.json()['login']),
+                       # str(res.json()['company']),
+                       # str(res.json()['organizations_url']),
+                       # str(res.json()['email']),
+                       # str(res.json()['url']),
+                       # str(res.json()['blog']),
+                      ]
+                    )
+      
+  file.close()
 
 def ExtractSlackResponseInfo(response):
   return {
