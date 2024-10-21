@@ -14,7 +14,7 @@ GITHUB_HEADERS = {
     'Authorization': f'token {GITHUB_TOKEN}',
     'Accept': 'application/vnd.github.v3+json'
 }
-GITHUB_ORG_URL=os.environ.get('GITHUB_ORG_URL')
+GITHUB_REPO_URL=os.environ.get('GITHUB_ORG_URL')
 CSV=os.environ['CSV_FILE_PATH']
 
 THREAD_TS = os.environ.get('SLACK_THREAD')
@@ -97,8 +97,8 @@ def SendSlackFileToThread(token,
 
 
 # Example usage
-repo_url = GITHUB_ORG_URL
-initial_comment = (f"Github Contrib CSV for Github Org '{GITHUB_ORG_URL}'")
+repo_url = GITHUB_REPO_URL
+initial_comment = (f"Github Contrib CSV for Github Org '{GITHUB_REPO_URL}'")
 committers = get_committers(repo_url)
 print("External users who committed in the last month:", committers)
 # do something with the data
@@ -111,3 +111,5 @@ slack_response = SendSlackFileToThread(SLACK_TOKEN,
 # Extract relevant information from the Slack response
 response_info = ExtractSlackResponseInfo(slack_response)
 print(json.dumps(response_info, indent=2))
+
+

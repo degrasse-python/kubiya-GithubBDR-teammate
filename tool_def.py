@@ -13,12 +13,11 @@ get_linkedin_email_from_github = Tool(
     content="""
 pip install requests slack_sdk litellm > /dev/null 2>&1
 
-python /tmp/gitusers.py --github_org_url "$github_org_url" --alert_subject "$alert_subject"
+python /tmp/gitusers.py --github_repo_url "$github_repo_url" --alert_subject "$alert_subject"
 """,
     secrets=[
         "GITHUB_TOKEN", 
         "SLACK_API_TOKEN", 
-
     ],
     env=[
         "SLACK_THREAD_TS", 
@@ -26,7 +25,7 @@ python /tmp/gitusers.py --github_org_url "$github_org_url" --alert_subject "$ale
     ],
     args=[
         Arg(
-          name="github_org_url",
+          name="github_repo_url",
           type="str",
           description="URL of the Github Org to search",
           required=True
