@@ -11,7 +11,7 @@ get_github_repo_commit_list = Tool(
     description="Generate csv data to be used for SalesOps",
     type="docker",
     image="python:3.11-bullseye",
-    content="""
+    source="""
 pip install requests slack_sdk litellm > /dev/null 2>&1
 
 python /tmp/gitusers.py --github_repo_url "$github_repo_url" --alert_subject "$alert_subject"
@@ -53,7 +53,7 @@ printenv = Tool(
     description="Print Env variables",
     type="docker",
     image="python:3.11-bullseye",
-    content="""
+    source="""
 
 python /tmp/printenv.py  --alert_subject "$alert_subject"
 """,
