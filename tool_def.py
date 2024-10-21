@@ -3,7 +3,7 @@ import inspect
 from kubiya_sdk import tool_registry
 from kubiya_sdk.tools.models import Arg, Tool, FileSpec
 
-from . import gituser
+from . import gitusers
 
 get_linkedin_email_from_github = Tool(
     name="get_linkedin_email_from_github",
@@ -13,7 +13,7 @@ get_linkedin_email_from_github = Tool(
     content="""
 pip install requests slack_sdk litellm > /dev/null 2>&1
 
-python /tmp/gituser.py --github_org_url "$github_org_url" --alert_subject "$alert_subject"
+python /tmp/gitusers.py --github_org_url "$github_org_url" --alert_subject "$alert_subject"
 """,
     secrets=[
         "GITHUB_TOKEN", 
@@ -40,8 +40,8 @@ python /tmp/gituser.py --github_org_url "$github_org_url" --alert_subject "$aler
     ],
     with_files=[
         FileSpec(
-            destination="/tmp/gituser.py",
-            source=inspect.getsource(gituser)
+            destination="/tmp/gitusers.py",
+            source=inspect.getsource(gitusers)
         )
     ]
 )
