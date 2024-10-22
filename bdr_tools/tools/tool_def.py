@@ -4,7 +4,7 @@ from kubiya_sdk import tool_registry
 from kubiya_sdk.tools.models import Arg, Tool, FileSpec
 
 import gitusers as gitusers
-import printenv as printenv
+from . import printenv
 
 get_github_repo_commit_list = Tool(
     name="get_github_repo_commit_list",
@@ -71,10 +71,6 @@ python /tmp/printenv.py
     args=[
           ],
     with_files=[
-      FileSpec(
-          destination="/tmp/requirements.txt",
-          content="slack-sdk==3.11.0\nrequests==2.32.3\nlitellm==1.49.5\npillow==11.0.0",
-              ),
       FileSpec(destination="/tmp/printenv.py", source=inspect.getsource(printenv)),
 
     ]
