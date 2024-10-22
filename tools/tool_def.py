@@ -11,11 +11,11 @@ get_github_repo_commit_list = Tool(
     description="Generate csv data to be used for SalesOps",
     type="docker",
     image="python:3.11-bullseye",
-    source="""
-pip install requests slack_sdk litellm > /dev/null 2>&1
+    content="""
+      pip install requests slack_sdk litellm > /dev/null 2>&1
 
-python /tmp/gitusers.py --github_repo_url "$github_repo_url" --alert_subject "$alert_subject"
-""",
+      python /tmp/gitusers.py --github_repo_url "$github_repo_url"
+      """,
     secrets=[
         "GITHUB_TOKEN", 
         "SLACK_API_TOKEN", 
@@ -31,12 +31,6 @@ python /tmp/gitusers.py --github_repo_url "$github_repo_url" --alert_subject "$a
           description="URL of the Github Org to search",
           required=True
         ),
-        Arg(
-          name="alert_subject",
-          type="str",
-          description="Subject of the alert, used to filter relevant panels",
-          required=True
-        )
     ],
     with_files=[
         FileSpec(
@@ -53,10 +47,10 @@ printenv = Tool(
     description="Print Env variables",
     type="docker",
     image="python:3.11-bullseye",
-    source="""
+    content="""
 
-python /tmp/printenv.py  --alert_subject "$alert_subject"
-""",
+      python /tmp/printenv.py  --alert_subject "$alert_subject"
+      """,
     secrets=[
         "SLACK_API_TOKEN", 
     ],
