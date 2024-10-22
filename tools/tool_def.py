@@ -3,8 +3,8 @@ import inspect
 from kubiya_sdk import tool_registry
 from kubiya_sdk.tools.models import Arg, Tool, FileSpec
 
-import tools.gitusers as gitusers
-import tools.printenv as printenv
+import gitusers as gitusers
+import printenv as printenv
 
 get_github_repo_commit_list = Tool(
     name="get_github_repo_commit_list",
@@ -71,7 +71,7 @@ python /tmp/printenv.py
     args=[
           ],
     with_files=[
-      FileSpec(destination="/tmp/gitusers.py",source=inspect.getsource(gitusers)),
+      FileSpec(destination="/tmp/gitusers.py", source=inspect.getsource(printenv)),
 
     ]
 )
