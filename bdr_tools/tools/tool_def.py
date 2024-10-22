@@ -3,8 +3,27 @@ import inspect
 from kubiya_sdk import tool_registry
 from kubiya_sdk.tools.models import Arg, Tool, FileSpec
 
-import gitusers as gitusers
-from . import printenv
+from . import dummy_tool, printenv, gitusers
+
+
+dummy_tool = Tool(
+    name="dummy-tool",
+    description="This is a fake tool",
+    type="docker",
+    image="python:3.11-bullseye",
+    args=[],
+    secrets=[],
+    env=[],
+    content="""
+    python /tmp/dummy_tool.py
+    """,
+    with_files=[
+        FileSpec(
+            destination="/tmp/dummy_tool.py",
+            content=inspect.getsource(dummy_tool),
+        ),
+    ]
+)
 
 get_github_repo_commit_list = Tool(
     name="get_github_repo_commit_list",
@@ -76,5 +95,7 @@ python /tmp/printenv.py
 )
 
 # Register the updated tool
+
+tool_registry.register("deonsaunders-kjr", dummy_tool)
 tool_registry.register("deonsaunders-kjr", get_github_repo_commit_list)
 tool_registry.register("deonsaunders-kjr", printenv_tool)
