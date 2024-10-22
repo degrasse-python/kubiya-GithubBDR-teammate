@@ -47,8 +47,8 @@ python /tmp/gitusers.py --github_repo_url "$github_repo_url"
 
 
 
-printenv = Tool(
-    name="printenv",
+printenv_tool = Tool(
+    name="printenv_tool",
     description="Print Env variables",
     type="docker",
     image="python:3.11-bullseye",
@@ -78,4 +78,4 @@ python /tmp/printenv.py
 
 # Register the updated tool
 tool_registry.register("deonsaunders-kjr", get_github_repo_commit_list)
-tool_registry.register("deonsaunders-kjr", printenv)
+tool_registry.register("deonsaunders-kjr", printenv_tool)
