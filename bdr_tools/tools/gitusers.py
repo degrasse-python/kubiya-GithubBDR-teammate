@@ -130,21 +130,11 @@ def SendSlackFileToThread(token,
     print(f"Error sending file to Slack thread: {e}")
     raise
 
-
-# Example usage
-repo_url = GITHUB_REPO_URL
-initial_comment = (f"Github Contrib CSV for Github Org '{GITHUB_REPO_URL}'")
-committers = get_committers(repo_url)
-print("External users who committed in the last month:", committers)
-# do something with the data
-slack_response = SendSlackFileToThread(SLACK_TOKEN, 
-                                        CHANNEL_ID, 
-                                        THREAD_TS, 
-                                        CSV, 
-                                        initial_comment)
-
-# Extract relevant information from the Slack response
-response_info = ExtractSlackResponseInfo(slack_response)
-print(json.dumps(response_info, indent=2))
-
-
+if __name__ == '__main__':
+  # Example usage
+  repo_url = GITHUB_REPO_URL
+  initial_comment = (f"Github Contrib CSV for Github Org '{GITHUB_REPO_URL}'")
+  committers = get_committers(repo_url)
+  print("External users who committed in the last month:", committers)
+  # Extract relevant information from the Slack response
+  print(json.dumps(committers, indent=2))

@@ -16,6 +16,8 @@ client = WebClient(token=SLACK_TOKEN)
 initial_comment = (f"Getting all the envs for this teammate'")
 
 if __name__ == "__main__":
+  
+  '''
   try: 
     result = client.chat_postMessage(
         channel=CHANNEL_ID,
@@ -31,5 +33,9 @@ if __name__ == "__main__":
 
   except SlackApiError as e:
       print(f"Error: {e}")
+
+  '''
+  for name, value in os.environ.items():
+    print("{0}: {1}".format(name, value))
 
 
