@@ -5,8 +5,6 @@ import logging
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
-from tools.utils import *
-
 logger = logging.getLogger(__name__)
 
 THREAD_TS = os.environ.get('SLACK_THREAD')
