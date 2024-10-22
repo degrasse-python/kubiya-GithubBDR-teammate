@@ -71,7 +71,7 @@ python /tmp/printenv.py
     args=[
           ],
     with_files=[
-      FileSpec(destination="/tmp/gitusers.py", source=inspect.getsource(printenv)),
+      FileSpec(destination="/tmp/printenv.py", source=inspect.getsource(printenv)),
 
     ]
 )
