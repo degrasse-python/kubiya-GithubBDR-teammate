@@ -16,7 +16,7 @@ GITHUB_HEADERS = {
     'Accept': 'application/vnd.github.v3+json'
 }
 GITHUB_REPO_URL=os.environ.get('GITHUB_ORG_URL')
-CSV=os.environ['CSV_FILE_PATH']
+CSV='/tmp/git_signals.csv'
 
 THREAD_TS = os.environ.get('SLACK_THREAD')
 CHANNEL_ID = os.environ.get('SLACK_CHANNEL')

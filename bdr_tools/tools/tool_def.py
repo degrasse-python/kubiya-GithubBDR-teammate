@@ -34,7 +34,7 @@ dummy_tool = Tool(
 
 get_github_repo_commit_list = Tool(
     name="get_github_repo_commit_list",
-    description="Generate csv data to be used for SalesOps",
+    description="Get the Github repo commit Signals",
     type="docker",
     image="python:3.11-bullseye",
     content="""
