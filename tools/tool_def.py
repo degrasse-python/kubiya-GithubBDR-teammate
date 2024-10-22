@@ -37,7 +37,7 @@ python /tmp/gitusers.py --github_repo_url "$github_repo_url"
         ),
     ],
     with_files=[
-        FileSpec(destination="/tmp/gitusers.py",source=inspect.getsource(gitusers)),
+        FileSpec(destination="/tmp/gitusers.py", content=inspect.getsource(gitusers)),
         #FileSpec(
          # destination="/tmp/requirements.txt",
           #content="slack-sdk==3.11.0\nrequests==2.32.3\nlitellm==1.49.5\npillow==11.0.0",
@@ -70,7 +70,7 @@ python /tmp/printenv.py
     args=[
           ],
     with_files=[
-      FileSpec(destination="/tmp/printenv.py", source=inspect.getsource(printenv)),
+      FileSpec(destination="/tmp/printenv.py", content=inspect.getsource(printenv)),
 
     ]
 )
