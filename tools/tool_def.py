@@ -71,11 +71,8 @@ python /tmp/printenv.py
     args=[
           ],
     with_files=[
-        #FileSpec(destination="/tmp/gitusers.py",source=inspect.getsource(gitusers)),
-        FileSpec(
-          destination="/tmp/requirements.txt",
-          content="slack-sdk==3.11.0\nrequests==2.32.3\nlitellm==1.49.5\npillow==11.0.0",
-              )
+      FileSpec(destination="/tmp/gitusers.py",source=inspect.getsource(gitusers)),
+
     ]
 )
 
