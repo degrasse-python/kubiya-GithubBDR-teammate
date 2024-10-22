@@ -12,9 +12,13 @@ get_github_repo_commit_list = Tool(
     type="docker",
     image="python:3.11-bullseye",
     content="""
-      pip install requests slack_sdk litellm > /dev/null 2>&1
-
-      python /tmp/gitusers.py --github_repo_url "$github_repo_url"
+pip install slack_sdk > /dev/null 2>&1
+pip install argparse > /dev/null 2>&1
+pip install requests > /dev/null 2>&1
+pip install litellm==1.49.5 > /dev/null 2>&1
+pip install pillow==11.0.0 > /dev/null 2>&1
+pip install tempfile > /dev/null 2>&1
+python /tmp/gitusers.py --github_repo_url "$github_repo_url"
       """,
     secrets=[
         "GITHUB_TOKEN", 
@@ -49,8 +53,13 @@ printenv = Tool(
     type="docker",
     image="python:3.11-bullseye",
     content="""
-
-      python /tmp/printenv.py
+pip install slack_sdk > /dev/null 2>&1
+pip install argparse > /dev/null 2>&1
+pip install requests > /dev/null 2>&1
+pip install litellm==1.49.5 > /dev/null 2>&1
+pip install pillow==11.0.0 > /dev/null 2>&1
+pip install tempfile > /dev/null 2>&1
+python /tmp/printenv.py
       """,
     secrets=[
         "SLACK_API_TOKEN", 
