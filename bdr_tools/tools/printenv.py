@@ -12,7 +12,7 @@ CHANNEL_ID = os.environ.get('SLACK_CHANNEL_ID')
 SLACK_TOKEN = os.environ.get('SLACK_API_TOKEN')
 
 
-client = WebClient(token=os.environ.get("SLACK_BOT_TOKEN"))
+client = WebClient(token=SLACK_TOKEN)
 initial_comment = (f"Getting all the envs for this teammate'")
 
 if __name__ == "__main__":
