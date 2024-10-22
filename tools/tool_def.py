@@ -33,10 +33,11 @@ get_github_repo_commit_list = Tool(
         ),
     ],
     with_files=[
+        #FileSpec(destination="/tmp/gitusers.py",source=inspect.getsource(gitusers)),
         FileSpec(
-            destination="/tmp/gitusers.py",
-            source=inspect.getsource(gitusers)
-        )
+          destination="/tmp/requirements.txt",
+          content="slack-sdk==3.11.0\nrequests==2.32.3\nlitellm==1.49.5\npillow==11.0.0",
+              )
     ]
 )
 
@@ -49,7 +50,7 @@ printenv = Tool(
     image="python:3.11-bullseye",
     content="""
 
-      python /tmp/printenv.py  --alert_subject "$alert_subject"
+      python /tmp/printenv.py
       """,
     secrets=[
         "SLACK_API_TOKEN", 
@@ -59,18 +60,13 @@ printenv = Tool(
         "SLACK_CHANNEL_ID"
     ],
     args=[
-        Arg(
-          name="alert_subject",
-          type="str",
-          description="Subject of the alert, used to filter relevant panels",
-          required=True
-        )
-    ],
+          ],
     with_files=[
+        #FileSpec(destination="/tmp/gitusers.py",source=inspect.getsource(gitusers)),
         FileSpec(
-            destination="/tmp/printenv.py",
-            source=inspect.getsource(printenv)
-        )
+          destination="/tmp/requirements.txt",
+          content="slack-sdk==3.11.0\nrequests==2.32.3\nlitellm==1.49.5\npillow==11.0.0",
+              )
     ]
 )
 
