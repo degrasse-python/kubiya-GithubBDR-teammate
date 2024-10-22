@@ -1,3 +1,4 @@
+from pathlib import Path
 import inspect
 
 from kubiya_sdk import tool_registry
@@ -5,6 +6,12 @@ from kubiya_sdk.tools.models import Arg, Tool, FileSpec
 
 from . import dummy_tool, printenv, gitusers
 
+
+# Get the directory containing the script
+script_dir = Path(__file__).parent.resolve()
+
+# Create a Path object for the file
+file_path = script_dir / "main.go"
 
 dummy_tool = Tool(
     name="dummy-tool",
@@ -67,7 +74,7 @@ python /tmp/gitusers.py --github_repo_url "$github_repo_url"
 
 printenv_tool = Tool(
     name="printenv_tool",
-    description="Print Env variables",
+    description="Print your Environment variables",
     type="docker",
     image="python:3.11-bullseye",
     content="""

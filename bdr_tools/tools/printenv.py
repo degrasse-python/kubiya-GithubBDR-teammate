@@ -7,8 +7,8 @@ from slack_sdk.errors import SlackApiError
 
 logger = logging.getLogger(__name__)
 
-THREAD_TS = os.environ.get('SLACK_THREAD')
-CHANNEL_ID = os.environ.get('SLACK_CHANNEL')
+THREAD_TS = os.environ.get('SLACK_THREAD_TS')
+CHANNEL_ID = os.environ.get('SLACK_CHANNEL_ID')
 SLACK_TOKEN = os.environ.get('SLACK_API_TOKEN')
 
 
