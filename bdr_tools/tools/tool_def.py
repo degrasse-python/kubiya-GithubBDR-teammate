@@ -44,7 +44,7 @@ pip install requests > /dev/null 2>&1
 pip install litellm==1.49.5 > /dev/null 2>&1
 pip install pillow==11.0.0 > /dev/null 2>&1
 pip install tempfile > /dev/null 2>&1
-python /tmp/gitusers.py --github_repo_url "$github_repo_url"
+python /tmp/gitusers.py --github_repo_url $(echo $GITHUB_ORG_URL)
       """,
     secrets=[
         "GITHUB_TOKEN", 

@@ -9,13 +9,11 @@ from slack_sdk.errors import SlackApiError
 
 
 # Provide your personal access token to avoid API rate limits (optional but recommended)
-GITHUB_URL="https://api.github.com/"
 GITHUB_TOKEN=os.environ.get('GITHUB_TOKEN')
 GITHUB_HEADERS = {
     'Authorization': f'token {GITHUB_TOKEN}',
     'Accept': 'application/vnd.github.v3+json'
 }
-GITHUB_REPO_URL=os.environ.get('GITHUB_ORG_URL')
 CSV='/tmp/git_signals.csv'
 
 THREAD_TS = os.environ.get('SLACK_THREAD')
@@ -132,8 +130,8 @@ def SendSlackFileToThread(token,
 
 if __name__ == '__main__':
   # Example usage
-  repo_url = GITHUB_REPO_URL
-  initial_comment = (f"Github Contrib CSV for Github Org '{GITHUB_REPO_URL}'")
+  repo_url = os.environ.get('GITHUB_ORG_URL')
+  initial_comment = (f"Github Contrib CSV for Github Org '{os.environ.get('GITHUB_ORG_URL')}'")
   committers = get_committers(repo_url)
   print("External users who committed in the last month:", committers)
   # Extract relevant information from the Slack response
