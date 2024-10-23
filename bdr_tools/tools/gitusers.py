@@ -49,10 +49,10 @@ def get_committers(repo_url):
 
   # Extract owner and repo from the URL
   parts = repo_url.rstrip('/').split('/')
-  owner, repo = parts[-2], parts[-1]
+  owner, repo_name = parts[-2], parts[-1]
 
   # GitHub API endpoint for commits
-  api_url = f"https://api.github.com/repos/{owner}/{repo}/commits"
+  org_api_url = f"https://api.github.com/orgs/{owner}/"
   
   # Calculate the timestamp for the past month
   one_month_ago = datetime.utcnow() - timedelta(days=30)
@@ -60,7 +60,7 @@ def get_committers(repo_url):
 
   # Make the request to fetch commits
   headers = {"Authorization": f"token {GITHUB_TOKEN}"}
-  response = requests.get(api_url, params={"since": since}, headers=headers)
+  response = requests.get(repo_url, params={"since": since}, headers=headers)
   
   if response.status_code != 200:
       print(f"Error: {response.status_code}, {response.json()}")
@@ -73,7 +73,7 @@ def get_committers(repo_url):
   external_committers = pd.DataFrame(columns=columns)
   commits = response.json()
   for committer in commits:
-    if is_member_of_org(committer['login']):
+    if is_member_of_org(org_api_url, committer['login']):
       continue
     # Extract unique committers
     else:
