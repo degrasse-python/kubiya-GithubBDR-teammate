@@ -9,11 +9,6 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
 
-parser = argparse.ArgumentParser(description="Trigger a search for github users")
-parser.add_argument("--git_repo", required=True, help="The url of the git repo")
-args = parser.parse_args()
-
-git_repo = args.git_repo
 
 # Provide your personal access token to avoid API rate limits (optional but recommended)
 GITHUB_TOKEN=os.environ.get('GITHUB_TOKEN')
@@ -137,9 +132,14 @@ def SendSlackFileToThread(token,
 
 if __name__ == '__main__':
   # Example usage
-  repo_url = os.environ.get('GITHUB_ORG_URL')
-  initial_comment = (f"Github Contrib CSV for Github Org '{os.environ.get('GITHUB_ORG_URL')}'")
-  committers = get_committers(repo_url)
+  parser = argparse.ArgumentParser(description="Trigger a search for github users")
+  parser.add_argument("--git_repo", required=True, help="The url of the git repo")
+  args = parser.parse_args()
+
+  git_repo = args.git_repo
+
+  initial_comment = (f"Github Contrib CSV for Github Org '{git_repo}'")
+  committers = get_committers(git_repo)
   print("External users who committed in the last month:", committers)
   # Extract relevant information from the Slack response
   print(json.dumps(committers, indent=2))
