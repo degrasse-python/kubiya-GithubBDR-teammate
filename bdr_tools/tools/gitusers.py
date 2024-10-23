@@ -4,9 +4,16 @@ import json
 from datetime import datetime, timedelta
 
 import requests
+import argparse
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
+
+parser = argparse.ArgumentParser(description="Trigger a search for github users")
+parser.add_argument("--git_repo", required=True, help="The url of the git repo")
+args = parser.parse_args()
+
+git_repo = args.git_repo
 
 # Provide your personal access token to avoid API rate limits (optional but recommended)
 GITHUB_TOKEN=os.environ.get('GITHUB_TOKEN')

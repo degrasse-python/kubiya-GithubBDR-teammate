@@ -34,7 +34,7 @@ dummy_tool = Tool(
 
 get_github_repo_commit_list = Tool(
     name="get_github_repo_commit_list",
-    description="Get the Github repo commit Signals",
+    description="Get the Github repo commit Signals for repo",
     type="docker",
     image="python:3.11-bullseye",
     content="""
@@ -44,7 +44,7 @@ pip install requests > /dev/null 2>&1
 pip install litellm==1.49.5 > /dev/null 2>&1
 pip install pillow==11.0.0 > /dev/null 2>&1
 pip install tempfile > /dev/null 2>&1
-python /tmp/gitusers.py --github_repo_url $(echo $GITHUB_ORG_URL)
+python /tmp/gitusers.py --github_repo_url $git_repo
       """,
     secrets=[
         "GITHUB_TOKEN", 
