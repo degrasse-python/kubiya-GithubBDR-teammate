@@ -38,6 +38,7 @@ get_github_repo_commit_list = Tool(
     type="docker",
     image="python:3.11-bullseye",
     content="""
+pip install pandas > /dev/null 2>&1
 pip install argparse > /dev/null 2>&1
 pip install slack_sdk > /dev/null 2>&1
 pip install requests > /dev/null 2>&1

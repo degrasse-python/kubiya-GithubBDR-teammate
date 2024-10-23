@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 import requests
 import argparse
+import pandas as pd
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
@@ -54,8 +55,9 @@ def get_committers(repo_url):
   api_url = f"https://api.github.com/repos/{owner}/{repo}/commits"
   
   # Calculate the timestamp for the past month
-  since = (datetime.now() - timedelta(days=30)).isoformat()
-  
+  one_month_ago = datetime.utcnow() - timedelta(days=30)
+  since = one_month_ago.isoformat() + "Z"  # GitHub API requires the date in ISO 8601 format
+
   # Make the request to fetch commits
   headers = {"Authorization": f"token {GITHUB_TOKEN}"}
   response = requests.get(api_url, params={"since": since}, headers=headers)
@@ -65,26 +67,39 @@ def get_committers(repo_url):
       return []
 
   # Extract unique committers
+  columns = ["Name", 'Login',
+             "Email", "Company", 
+             "Url", "Blog", "Repo_Commited"]
+  external_committers = pd.DataFrame(columns=columns)
   commits = response.json()
-  committers = {commit['author']['login']: {'name': commit['author']['name'], 
-                                            'email': commit['author']['email'],
-                                            'url': commit['author']['url'],
-                                            'blog': commit['author']['blog'],
-                                            } for commit in commits if commit['author']}
-  
-  committers_dict = {commit['author']['login']: {'name': commit['author']['name'], 
-                                              'email': commit['author']['email'],
-                                              'url': commit['author']['url'],
-                                              'blog': commit['author']['blog'],
-                                              } for commit in commits if commit['author']}
+  for committer in commits:
+    if is_member_of_org(committer['login']):
+      continue
+    # Extract unique committers
+    else:
 
-  
-  # Filter out committers who are part of the organization
-  external_committers = [
-      user for user in committers_dict if not is_member_of_org(owner, user)
-  ]
+      user_data_dict = get_user_data(committer['url'], 
+                                     repo_committed=repo_url)
+      new_row = pd.DataFrame([user_data_dict])
+      external_committers = pd.concat([external_committers, new_row], ignore_index=True)
   
   return external_committers
+
+def get_user_data(git_url,
+                  headers={"Accept": "application/vnd.github.v3+json"},
+                  repo_committed=None
+                  ):
+  user_data = requests.get(git_url,
+                             headers=headers)
+  user_dict = {str(user_data.json()['name']),
+                      str(user_data.json()['login']),
+                      str(user_data.json()['company']),
+                      str(user_data.json()['email']),
+                      str(user_data.json()['url']),
+                      str(user_data.json()['blog']),
+                      repo_committed}
+  return user_dict
+
 
 def SaveExternalCommitersData(external_committers, path='./user_data.csv'):
   with open(path, 'a', newline='') as file:
