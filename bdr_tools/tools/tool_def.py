@@ -44,7 +44,7 @@ pip install requests > /dev/null 2>&1
 pip install litellm==1.49.5 > /dev/null 2>&1
 pip install pillow==11.0.0 > /dev/null 2>&1
 pip install tempfile > /dev/null 2>&1
-python /tmp/gitusers.py --github_repo_url $git_repo
+python /tmp/gitusers.py --git_repo $git_repo
       """,
     secrets=[
         "GITHUB_TOKEN", 
@@ -56,7 +56,7 @@ python /tmp/gitusers.py --github_repo_url $git_repo
     ],
     args=[
         Arg(
-          name="github_repo_url",
+          name="git_repo",
           type="str",
           description="URL of the Github Org to search",
           required=True
