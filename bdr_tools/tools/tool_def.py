@@ -51,6 +51,10 @@ pip install html2text > /dev/null 2>&1
 pip install litellm==1.49.5 > /dev/null 2>&1
 pip install pillow==11.0.0 > /dev/null 2>&1
 pip install tempfile > /dev/null 2>&1
+sudo apt update
+sudo apt install wget
+
+
 python /tmp/gitusers.py --git_repo $git_repo
       """,
     secrets=[

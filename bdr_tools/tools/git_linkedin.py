@@ -343,7 +343,29 @@ if __name__ == '__main__':
   
   initial_comment = (f"Github Contrib CSV for Github Org '{git_repo}'")
   committers = get_committers(git_repo)
+  for user in  committers.itertuples(index=True, name='Row'):
+    print(f'api  url: {user.Url}')
 
+    try:
+      # Scrape data
+      raw_html = fetch_html_selenium(user.Url)
+      markdown = html_to_markdown_with_readability(raw_html)
+      # path_to_data = scraper.save_raw_data(markdown, timestamp)
+      print(f'-- markdown raw data -- ')
+      print(f'... type: {type(markdown)}')
+      print(f'... len : {len(markdown)}')
+      print(markdown)
+      linkedin_url = get_linkedin_url(markdown)
+      if linkedin_url:
+        print(linkedin_url)
+
+    except Exception as e:
+      print(e)
+      linkedin_url='None'
+    user_data = send_user_data(user['url'],
+                            linkedin_url=linkedin_url, 
+                            path=CSV,
+                            headers=GITHUB_HEADERS)
   
   print("External users who committed in the last month:", committers)
   # Extract relevant information from the Slack response
