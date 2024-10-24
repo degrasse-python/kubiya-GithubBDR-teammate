@@ -51,9 +51,11 @@ pip install html2text > /dev/null 2>&1
 pip install litellm==1.49.5 > /dev/null 2>&1
 pip install pillow==11.0.0 > /dev/null 2>&1
 pip install tempfile > /dev/null 2>&1
-sudo apt update
 sudo apt install wget
+wget -nc https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+sudo apt update
 
+sudo apt install -f ./google-chrome-stable_current_amd64.deb 
 
 python /tmp/gitusers.py --git_repo $git_repo
       """,
