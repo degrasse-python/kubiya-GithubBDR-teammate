@@ -42,6 +42,12 @@ pip install pandas > /dev/null 2>&1
 pip install argparse > /dev/null 2>&1
 pip install slack_sdk > /dev/null 2>&1
 pip install requests > /dev/null 2>&1
+pip install bs4 > /dev/null 2>&1
+pip install selenium > /dev/null 2>&1
+pip install langchain_ollama > /dev/null 2>&1
+pip install langchain_core > /dev/null 2>&1
+pip install pydantic > /dev/null 2>&1
+pip install html2text > /dev/null 2>&1
 pip install litellm==1.49.5 > /dev/null 2>&1
 pip install pillow==11.0.0 > /dev/null 2>&1
 pip install tempfile > /dev/null 2>&1
